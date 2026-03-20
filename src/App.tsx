@@ -147,21 +147,9 @@ function App() {
   const currentCard = reviewCards[currentQuestion] as any;
 
   return (
-    <div style={{ padding: 20, maxWidth: "700px", margin: "0 auto", fontFamily: "sans-serif" }}>
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1>Anki Clone</h1>
-        <div>
-          <button onClick={() => setMode("create")} style={{ marginRight: 10 }}>Criar</button>
-          <button 
-            onClick={() => {
-              if (!selectedDeckId) return alert("Selecione um deck!");
-              setIsReviewReady(false);
-              setMode("review");
-            }}
-          >
-            Revisar
-          </button>
-        </div>
+    <div style={{ padding: 20, maxWidth: "700px", margin: "0 auto", fontFamily: "sans-serif", alignContent: "center" }}>
+      <header style={{ display: "flex",  alignItems: "center", justifyContent: "center"}}>        
+        <h1 style={{ color: "#e25402"}}>Anki Clone</h1>
       </header>
 
       <hr />
@@ -171,7 +159,6 @@ function App() {
           {isReviewReady && reviewCards.length > 0 && currentQuestion >= reviewCards.length && (
             <div style={{ textAlign: "center" }}>
               <h2>🎉 Deck revisado com sucesso!</h2>
-              <button onClick={() => setMode("create")}>Voltar</button>
             </div>
           )}
 
@@ -209,7 +196,7 @@ function App() {
               {selectedAnswer !== null && (
                 <div style={{ marginTop: 20, padding: "15px", backgroundColor: "#f0fdf4", borderRadius: "8px" }}>
                   {selectedAnswer === currentCard.correctAnswer ? (
-                    <p style={{ color: "#166534", fontWeight: "bold" }}>✅ Correto!</p>
+                    <p style={{ color: "#0cbe51", fontWeight: "bold" }}>✅ Correto!</p>
                   ) : (
                     <p style={{ color: "#991b1b" }}>❌ Resposta certa: {currentCard.alternatives[currentCard.correctAnswer]}</p>
                   )}
@@ -223,27 +210,46 @@ function App() {
               )}
             </div>
           )}
+
+          <button onClick={() => setMode("create")} style={{ marginTop: 30, marginRight: 10, color: "white", 
+            border: "none", padding: "6px 12px", borderRadius: "4px", cursor: "pointer",
+            background: "#dfac06" }}>Página inicial</button>
         </div>
       )}
 
       {mode === "create" && (
         <div style={{ marginTop: 20 }}>
-          <section style={{ marginBottom: "30px", backgroundColor: "#f8fafc", padding: "15px", borderRadius: "8px" }}>
-            <h2>1. Deck</h2>
+          <section style={{ marginBottom: "30px", backgroundColor: "#16171d", padding: "15px", borderRadius: "8px" }}>
+            
             <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
               <input placeholder="Nome do novo deck" value={deckName} onChange={(e) => setDeckName(e.target.value)} style={{ flex: 1 }} />
-              <button onClick={addDeck}>Criar</button>
+              <button onClick={addDeck} style={{ 
+                width: 100, background: "#0cbe51", color: "white", border: "none", 
+                padding: "6px 12px", borderRadius: "4px", cursor: "pointer" }}
+                >Criar Deck</button>
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <select value={selectedDeckId} onChange={(e) => setSelectedDeckId(e.target.value)} style={{ flex: 1, padding: "5px" }}>
-                <option value="">Selecione um deck</option>
+                <option value="">Selecione um Deck para revisar ou criar novas perguntas</option>
                 {decks.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
               {selectedDeckId && (
-                <button onClick={() => deleteDeck(selectedDeckId)} style={{ backgroundColor: "#ef4444", color: "white", border: "none", padding: "6px 12px", borderRadius: "4px", cursor: "pointer" }}>
-                  🗑️ Excluir Deck
+                <>
+                <button onClick={() => deleteDeck(selectedDeckId)} style={{ 
+                  width: 110, backgroundColor: "#ef4444", color: "white", border: "none", padding: "6px 12px", 
+                  borderRadius: "4px", cursor: "pointer" }}
+                  >Excluir Deck
                 </button>
+                <button 
+                  onClick={() => {
+                    if (!selectedDeckId) return alert("Selecione um deck!");
+                    setIsReviewReady(false);
+                    setMode("review");
+                  }} style={{ width: 110, color: "white", border: "none", padding: "6px 12px", 
+                    borderRadius: "4px", cursor: "pointer", background: "#085ddd" }}
+                >Revisar Deck
+                </button></>
               )}
             </div>
           </section>
@@ -283,8 +289,12 @@ function App() {
                 </div>
               ))}
               <div style={{ marginTop: "15px" }}>
-                <button onClick={addAlternative}>+ Opção</button>
-                <button onClick={addCard} style={{ marginLeft: "10px", backgroundColor: "#10b981", color: "white", padding: "8px 20px", border: "none", borderRadius: "6px", cursor: "pointer" }}>
+                <button onClick={addAlternative} style={{ backgroundColor: "#d49d07", 
+                  color: "white", padding: "8px 12px", border: "none", borderRadius: "6px", 
+                  cursor: "pointer", width: 150 }}>Adicionar alternativa</button>
+                <button onClick={addCard} style={{ marginLeft: "10px", backgroundColor: "#10b981", 
+                  color: "white", padding: "8px 12px", border: "none", borderRadius: "6px", 
+                  cursor: "pointer", width: 130 }}>
                   Salvar Pergunta
                 </button>
               </div>
