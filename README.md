@@ -26,3 +26,9 @@ Este é um projeto de cartões de memorização (Flashcards) baseado no software
 1. Clone o repositório:
    ```bash
    git clone [https://github.com/seu-usuario/nome-do-repositorio.git](https://github.com/seu-usuario/nome-do-repositorio.git)
+
+## Prints do App
+<br>
+<img src="./src/assets/img/PrintNewQuestion.png" alt="Tela Nova Pergunta" width="400">
+<br>
+<img src="./src/assets/img/PrintQuestion.png" alt="Visualização da questão" width="400">

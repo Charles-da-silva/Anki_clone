@@ -108,8 +108,8 @@ function App() {
   function scheduleCard(card: any, difficulty: "easy" | "medium" | "hard") {
     let delay = 0;
     if (difficulty === "easy") delay = 3 * 24 * 60 * 60 * 1000;
-    if (difficulty === "medium") delay = 24 * 60 * 60 * 1000;
-    if (difficulty === "hard") delay = 1 * 60 * 1000;
+    if (difficulty === "medium") delay = 4 * 60 * 60 * 1000;
+    if (difficulty === "hard") delay = 10 * 60 * 1000;
 
     const updatedCards = cards.map((c) =>
       c.id === card.id ? { ...c, nextReview: Date.now() + delay } : c
@@ -179,7 +179,11 @@ function App() {
               </button>
 
               <h3>Pergunta:</h3>
-              <p style={{ fontSize: "1.2rem" }}>{currentCard.question}</p>
+              <p style={{ fontSize: "1.2rem", whiteSpace: "pre-wrap", // 👈 ISSO AQUI mantém as quebras de linha e espaços
+              wordWrap: "break-word", // Garante que textos longos não quebrem o layout              
+              padding: "10px",
+              borderRadius: "5px",
+              textAlign: "left" }}>{currentCard.question}</p>
               
               {currentCard.image && (
                 <img src={currentCard.image} alt="Pergunta" style={{ maxWidth: "100%", borderRadius: "8px", marginBottom: "15px" }} />
@@ -187,7 +191,9 @@ function App() {
 
               <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                 {currentCard.alternatives.map((alt: string, index: number) => (
-                  <button key={index} onClick={() => setSelectedAnswer(index)} style={{ textAlign: "left", padding: "12px", borderRadius: "8px", cursor: "pointer" }}>
+                  <button key={index} onClick={() => setSelectedAnswer(index)} 
+                  style={{ textAlign: "left", padding: "12px", borderRadius: "8px", 
+                  cursor: "pointer" }}>
                     {alt}
                   </button>
                 ))}
@@ -202,9 +208,17 @@ function App() {
                   )}
                   
                   <div style={{ marginTop: 10 }}>
-                    <button onClick={() => { scheduleCard(currentCard, "hard"); setcurrentQuestion(i => i + 1); setSelectedAnswer(null); }}style={{ background: "orangered" }}>Difícil (1 min)</button>
-                    <button onClick={() => { scheduleCard(currentCard, "medium"); setcurrentQuestion(i => i + 1); setSelectedAnswer(null); }} style={{ marginLeft: 10, background: "orange"}}>Médio (1 dia)</button>
-                    <button onClick={() => { scheduleCard(currentCard, "easy"); setcurrentQuestion(i => i + 1); setSelectedAnswer(null); }} style={{ marginLeft: 10, background: "green" }}>Fácil (3 dias)</button>
+                    <button onClick={() => { scheduleCard(currentCard, "hard"); 
+                      setcurrentQuestion(i => i + 1); setSelectedAnswer(null); }}
+                      style={{ background: "orangered" }}>Difícil (10 min)</button>
+
+                    <button onClick={() => { scheduleCard(currentCard, "medium"); 
+                      setcurrentQuestion(i => i + 1); setSelectedAnswer(null); }} 
+                      style={{ marginLeft: 10, background: "orange"}}>Médio (4 hs)</button>
+
+                    <button onClick={() => { scheduleCard(currentCard, "easy"); 
+                      setcurrentQuestion(i => i + 1); setSelectedAnswer(null); }} 
+                      style={{ marginLeft: 10, background: "green" }}>Fácil (3 dias)</button>
                   </div>
                 </div>
               )}
