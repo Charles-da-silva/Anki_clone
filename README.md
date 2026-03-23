@@ -21,6 +21,10 @@ Este é um projeto de cartões de memorização (Flashcards) baseado no software
 - [LocalStorage API](https://developer.mozilla.org/pt-BR/docs/Web/API/Window/localStorage)
 - [CSS-in-JS (Inline Styles)](https://reactjs.org/docs/dom-elements.html#style)
 
+## Teste agora mesmo o app
+
+Basta acessar o link da página rodando a aplicação:  [Anki Clone](https://charles-da-silva.github.io/Anki_clone/)
+
 ## Prints do App
 <div align="center">
   <br>
@@ -28,7 +32,3 @@ Este é um projeto de cartões de memorização (Flashcards) baseado no software
   <br>
   <img src="./src/assets/img/PrintQuestion.png" alt="Visualização da questão" width="600" >
 </div>
-
-## Teste agora mesmo o app
-
-Basta acessar o link da página rodando a aplicação:  [Anki Clone](https://charles-da-silva.github.io/Anki_clone/)
