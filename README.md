@@ -21,14 +21,16 @@ Este é um projeto de cartões de memorização (Flashcards) baseado no software
 - [LocalStorage API](https://developer.mozilla.org/pt-BR/docs/Web/API/Window/localStorage)
 - [CSS-in-JS (Inline Styles)](https://reactjs.org/docs/dom-elements.html#style)
 
-## 📖 Como Rodar o Projeto
+## Prints do App
+<div align="center">
+  <br>
+  <img src="./src/assets/img/PrintNewQuestion.png" alt="Tela Nova Pergunta" width="600">
+  <br>
+  <img src="./src/assets/img/PrintQuestion.png" alt="Visualização da questão" width="600" >
+</div>
+
+## Como Rodar o Projeto
 
 1. Clone o repositório:
    ```bash
    git clone [https://github.com/seu-usuario/nome-do-repositorio.git](https://github.com/seu-usuario/nome-do-repositorio.git)
-
-## Prints do App
-<br>
-<img src="./src/assets/img/PrintNewQuestion.png" alt="Tela Nova Pergunta" width="400">
-<br>
-<img src="./src/assets/img/PrintQuestion.png" alt="Visualização da questão" width="400">
