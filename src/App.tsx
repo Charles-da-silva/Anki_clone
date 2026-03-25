@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import type { ChangeEvent } from "react";
 import { loadCards, saveCards, loadDecks, saveDecks } from "./storage/storage";
 import type { Card, Deck } from "./types/types";
+import { useDeckImportExport } from "./hooks/useDeckImportExport";
+
 
 function App() {
   const [decks, setDecks] = useState<Deck[]>(loadDecks());
@@ -21,6 +23,9 @@ function App() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [reviewCards, setReviewCards] = useState<Card[]>([]);
   const [isReviewReady, setIsReviewReady] = useState(false);
+
+  const [selectedDecksToExport, setSelectedDecksToExport] = useState<string[]>([]);
+
 
   // --- FUNÇÕES DE EXCLUSÃO ---
 
@@ -58,6 +63,13 @@ function App() {
   }
 
   // --- RESTANTE DAS FUNÇÕES ---
+
+  const { exportDecks, importDecks } = useDeckImportExport({
+    decks,
+    cards,
+    setDecks,
+    setCards
+  });
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -146,6 +158,20 @@ function App() {
 
   const currentCard = reviewCards[currentQuestion] as any;
 
+  const handleImageClick = (e) => {
+    const mensagem = "⚠️ AVISO: Este App usa o 'localStorage' do seu navegador para salvar arquivos:\n" +
+      "• A imagem fica salva apenas neste dispositivo e navegador.\n" +
+      "• O limite de espaço total é de apenas 5MB, para perguntas com ou sem imagens.\n" +
+      "• Se limpar o navegador, os Decks serão excluídos (exporte antes).\n\n" +
+      "Recomendamos evitar o uso de imagens ou usar apenas arquivos leves (JPG/WebP). Deseja prosseguir com o upload?";
+
+    if (!window.confirm(mensagem)) {
+      e.preventDefault(); // Impede que o seletor de arquivos abra
+    }
+  };
+
+  
+
   return (
     <div style={{ padding: 20, maxWidth: "700px", margin: "0 auto", fontFamily: "sans-serif", alignContent: "center" }}>
       <header style={{ display: "flex",  alignItems: "center", justifyContent: "center"}}>        
@@ -225,9 +251,9 @@ function App() {
             </div>
           )}
 
-          <button onClick={() => setMode("create")} style={{ marginTop: 30, marginRight: 10, color: "white", 
-            border: "none", padding: "6px 12px", borderRadius: "4px", cursor: "pointer",
-            background: "#dfac06" }}>Página inicial</button>
+          <button onClick={() => setMode("create")} style={{ marginTop: 30, marginRight: 10, color: "#d49d07", 
+            border: "1px solid #d49d07", padding: "6px 12px", borderRadius: "6px", cursor: "pointer",
+            background: "#16171d" }}>Página inicial</button>
         </div>
       )}
 
@@ -236,34 +262,64 @@ function App() {
           <section style={{ marginBottom: "30px", backgroundColor: "#16171d", padding: "15px", borderRadius: "8px" }}>
             
             <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
-              <input placeholder="Nome do novo deck" value={deckName} onChange={(e) => setDeckName(e.target.value)} style={{ flex: 1 }} />
+              <input placeholder="Nome do novo deck" value={deckName} onChange={(e) => setDeckName(e.target.value)} style={{ flex: 1, paddingLeft: 8 }} />
               <button onClick={addDeck} style={{ 
-                width: 100, background: "#0cbe51", color: "white", border: "none", 
-                padding: "6px 12px", borderRadius: "4px", cursor: "pointer" }}
+                width: 100, background: "#16171d ", color: "#d49d07", border: "1px solid #d49d07", 
+                padding: "6px 12px", borderRadius: "6px", cursor: "pointer" }}
                 >Criar Deck</button>
+
+              {/*importar Decks*/}
+              <div>
+                <label 
+                  htmlFor="file-upload" 
+                  style={{ width: 110, color: "#4B5563", border: "1px solid #4B5563", padding: "6px 12px", 
+                    borderRadius: "6px", cursor: "pointer", background: "#16171d", fontSize: "13px" }}
+                >Importar Deck
+                </label>
+                
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept="application/json"
+                  onChange={importDecks}
+                  style={{ display: 'none' }} // Esconde o input feio
+                />
+              </div>
+
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <select value={selectedDeckId} onChange={(e) => setSelectedDeckId(e.target.value)} style={{ flex: 1, padding: "5px" }}>
-                <option value="">Selecione um Deck para revisar ou criar novas perguntas</option>
+              <select value={selectedDeckId} onChange={(e) => {
+                  const id = e.target.value;
+                  setSelectedDeckId(id);
+                  setSelectedDecksToExport([id]);
+                }} style={{ flex: 1, padding: "5px" }}>
+                <option value="">Selecione um Deck para revisar, excluir ou criar novas perguntas</option>
                 {decks.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
+              
               {selectedDeckId && (
-                <>
-                <button onClick={() => deleteDeck(selectedDeckId)} style={{ 
-                  width: 110, backgroundColor: "#ef4444", color: "white", border: "none", padding: "6px 12px", 
-                  borderRadius: "4px", cursor: "pointer" }}
-                  >Excluir Deck
-                </button>
-                <button 
+              <> 
+              <button 
                   onClick={() => {
                     if (!selectedDeckId) return alert("Selecione um deck!");
                     setIsReviewReady(false);
                     setMode("review");
-                  }} style={{ width: 110, color: "white", border: "none", padding: "6px 12px", 
-                    borderRadius: "4px", cursor: "pointer", background: "#085ddd" }}
-                >Revisar Deck
-                </button></>
+                  }} style={{ width: 110, color: "white", border: "1px solid white", padding: "6px 12px", 
+                    borderRadius: "6px", cursor: "pointer", background: "#3B82F6" }}>Revisar
+                </button>
+                                
+                <button onClick={() => exportDecks(selectedDecksToExport)} 
+                style={{ width: 110, color: "#4B5563", border: "1px solid #4B5563", padding: "6px 12px", 
+                    borderRadius: "6px", cursor: "pointer", background: "#16171d" }}>Exportar
+                </button>
+
+                <button onClick={() => deleteDeck(selectedDeckId)} style={{ 
+                  width: 110, color: "#EF4444", border: "1px solid #EF4444", padding: "6px 12px", 
+                  borderRadius: "6px", cursor: "pointer", background: "#16171d"}}>Excluir
+                </button>
+              </>
+                
               )}
             </div>
           </section>
@@ -277,14 +333,21 @@ function App() {
                 onChange={(e) => setQuestion(e.target.value)} 
                 style={{ width: "100%", height: "80px", marginBottom: "10px", padding: "8px", boxSizing: "border-box" }}
               />
-              
+
               <div style={{ marginBottom: "15px" }}>
-                <label style={{ display: "block", fontSize: "14px", color: "#64748b" }}>Imagem (opcional):</label>
-                <input type="file" accept="image/*" onChange={handleImageChange} />
+                <label htmlFor="img-upload" 
+                  onClick={handleImageClick}
+                  style={{ width: 110, color: "#4B5563", border: "1px solid #4B5563", padding: "6px 12px", 
+                  borderRadius: "6px", cursor: "pointer", background: "#16171d", fontSize: "13px"  }}>Imagem (opcional):</label>
+                <input id="img-upload" type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
                 {image && (
                   <div style={{ marginTop: "10px" }}>
-                    <img src={image} alt="Preview" style={{ maxWidth: "100px", borderRadius: "4px" }} />
-                    <button onClick={() => setImage(null)} style={{ marginLeft: "10px", fontSize: "12px" }}>Remover</button>
+                    <img src={image} alt="Preview" style={{ maxWidth: "100px", borderRadius: "6px" }} />
+                    <button onClick={() => setImage(null)} style={{ marginLeft: "10px", width: 110, 
+                      color: "#EF4444", border: "1px solid #EF4444", padding: "6px 12px", 
+                      borderRadius: "6px", cursor: "pointer", background: "#16171d", fontSize: "13px"}}>
+                        Remover
+                    </button>
                   </div>
                 )}
               </div>
@@ -303,11 +366,12 @@ function App() {
                 </div>
               ))}
               <div style={{ marginTop: "15px" }}>
-                <button onClick={addAlternative} style={{ backgroundColor: "#d49d07", 
-                  color: "white", padding: "8px 12px", border: "none", borderRadius: "6px", 
+                <button onClick={addAlternative} style={{ backgroundColor: "#16171d", 
+                  color: "#d49d07", padding: "8px 12px", border: "1px solid #d49d07", borderRadius: "6px", 
                   cursor: "pointer", width: 150 }}>Adicionar alternativa</button>
-                <button onClick={addCard} style={{ marginLeft: "10px", backgroundColor: "#10b981", 
-                  color: "white", padding: "8px 12px", border: "none", borderRadius: "6px", 
+
+                <button onClick={addCard} style={{ marginLeft: "10px", backgroundColor: "#3B82F6", 
+                  color: "white", padding: "8px 12px", border: "1px solid white", borderRadius: "6px", 
                   cursor: "pointer", width: 130 }}>
                   Salvar Pergunta
                 </button>
