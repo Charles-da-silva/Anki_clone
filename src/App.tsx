@@ -158,7 +158,7 @@ function App() {
 
   const currentCard = reviewCards[currentQuestion] as any;
 
-  const handleImageClick = (e) => {
+  const handleImageClick = (e: React.MouseEvent<HTMLLabelElement>) => {
     const mensagem = "⚠️ AVISO: Este App usa o 'localStorage' do seu navegador para salvar arquivos:\n" +
       "• A imagem fica salva apenas neste dispositivo e navegador.\n" +
       "• O limite de espaço total é de apenas 5MB, para perguntas com ou sem imagens.\n" +
